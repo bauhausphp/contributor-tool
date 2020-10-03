@@ -9,5 +9,12 @@ build:
 sh:
 	@docker run -it bauhaus sh
 
+run: tty ?= yes
+run: tty-arg = $(filter ${tty},yes,-it)
+run: v-arg = -v $(shell pwd)/packages:/usr/local/bauhaus
+run: command = make ${make-target} packages='${packages}'
 run:
-	@docker run -it bauhaus make ${command}
+	@docker run ${tty-arg} ${v-arg} bauhaus ${command}
+
+tests: make-target = tests
+tests: run
