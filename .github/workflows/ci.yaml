@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    #- name: Pull all packages
+    #  run: make init
+
+    - name: Build image
+      run: make build
+
+    - name: Run all tests
+      run: make run tests tty=no
