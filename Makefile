@@ -1,20 +1,33 @@
-pkg = $(sort $(shell cat packages.txt))
+docker-image = bauhaus-dev
+pkgs-dir = $(shell pwd)/pkgs
 
-init:
-	@for p in ${pkg}; do [ ! -d $$p ] && git clone git@github.com:bauhausphp/$${p}.git ./packages/$${p}; done
+clone-pkgs: pkgs = $(sort $(shell cat pkgs.txt))
+clone-pkgs:
+	@for p in ${pkgs}; do [ ! -d $$p ] && git clone git@github.com:bauhausphp/$${p}.git ./packages/$${p}; done
 
-build:
-	@docker build -t bauhaus .
+docker-build:
+	@docker build -t ${docker-image} ./docker
 
-sh:
-	@docker run -it bauhaus sh
+docker-run: id = ${docker-image}-${pkg}
+docker-run: options-arg = -it --rm --name ${id}
+docker-run: v-arg = -v ${pkgs-dir}/${pkg}:/usr/local/bauhaus
+docker-run:
+	docker run ${options-arg} ${v-arg} ${docker-image} ${docker-cmd}
 
-run: tty ?= yes
-run: tty-arg = $(filter ${tty},yes,-it)
-run: v-arg = -v $(shell pwd)/packages:/usr/local/bauhaus
-run: command = make ${make-target} packages='${pkg}'
-run:
-	@docker run ${tty-arg} ${v-arg} bauhaus ${command}
+composer: docker-cmd = composer ${composer-cmd}
+composer: docker-run
 
-tests: make-target = tests
-tests: run
+update: composer-cmd = update
+update: composer
+
+install: composer-cmd = install
+install: composer
+
+require: composer-cmd = require ${dep}
+require: composer
+
+tests: composer-cmd = run test:unit
+tests: composer
+
+sh: docker-cmd = sh
+sh: docker-run

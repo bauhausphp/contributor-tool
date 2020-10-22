@@ -7,6 +7,5 @@ contributor-tool helps us in managing all packages.
 
 ```shell
 $ make init
-$ make build
-$ make run tests
+$ make tests pkg=<package-name>
 ```
