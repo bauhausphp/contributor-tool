@@ -1,6 +1,6 @@
 name: Docker Publish
 
-on: pull_request
+on: push
 
 jobs:
   publish:
@@ -18,3 +18,4 @@ jobs:
 
     - name: Publish
       run: make docker-push
+      if: github.ref == 'refs/heads/main'
