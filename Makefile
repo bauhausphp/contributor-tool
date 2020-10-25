@@ -1,11 +1,15 @@
-docker-image = bauhaus-dev
+docker-image = bauhausphp-dev
 pkgs-dir = $(shell pwd)/pkgs
 
 clone-pkgs: pkgs = $(sort $(shell cat pkgs.txt))
 clone-pkgs:
 	@for p in ${pkgs}; do [ ! -d $$p ] && git clone git@github.com:bauhausphp/$${p}.git ./packages/$${p}; done
 
+docker-build: docker-tag = ${docker-image}$(if ${tag},:${tag})
 docker-build:
+	@docker build --tag ${docker-tag} ./docker
+
+docker-publish:
 	@docker build -t ${docker-image} ./docker
 
 docker-run: id = ${docker-image}-${pkg}
