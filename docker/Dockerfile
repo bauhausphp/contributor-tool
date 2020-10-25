@@ -16,6 +16,6 @@ RUN apk add --no-cache \
     make install && \
     docker-php-ext-enable pcov && \
     mv /docker/pcov.ini /usr/local/etc/php/conf.d/docker-php-pcov.ini
-COPY --from=composer:2.0.0-RC2 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.0 /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /usr/local/bauhaus
