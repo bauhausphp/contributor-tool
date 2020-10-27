@@ -1,0 +1,21 @@
+name: Docker Publish
+
+on: push
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: make docker-build
+
+    - name: Login
+      run: make docker-login username=${{ secrets.DOCKER_USERNAME }} password=${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Publish
+      run: make docker-push
+      if: github.ref == 'refs/heads/main'
