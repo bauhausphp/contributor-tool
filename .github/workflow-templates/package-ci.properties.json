@@ -1,0 +1,5 @@
+{
+  "name": "Bauhaus PHP package CI",
+  "description": "Default CI for all bauhaus PHP packages",
+  "iconName": "package-ci-icon.svg"
+}
