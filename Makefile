@@ -5,7 +5,7 @@ composer-cache-dir = $(shell pwd)/docker/.cache/composer
 setup: clone install
 
 clone: branch ?= main
-clone: repo = git@github.com:bauhausphp/${pkg}.git
+clone: repo = https://github.com/bauhausphp/${pkg}.git
 clone:
 	rm -rf ${pkg-dir}
 	git clone -b ${branch} ${repo} ${pkg-dir}
