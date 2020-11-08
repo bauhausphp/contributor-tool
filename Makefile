@@ -1,4 +1,4 @@
-CI ?= no
+CI ?=
 
 docker-image := bauhausphp/dev:latest
 pkg-dir = $(shell pwd)/pkgs/${pkg}
@@ -7,7 +7,7 @@ composer-cache-dir = $(shell pwd)/docker/.cache/composer
 setup: clone install
 
 clone: branch ?= main
-clone: repo = https://github.com/bauhausphp/${pkg}.git
+clone: repo = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${pkg}.git
 clone:
 	rm -rf ${pkg-dir}
 	git clone -b ${branch} ${repo} ${pkg-dir}
@@ -42,8 +42,7 @@ docker-login:
 docker-push:
 	@docker push ${docker-image}
 
-docker-run: tty = $(if $(filter ${CI},no),-it)
-docker-run: options = ${tty} --rm --name bauhausphp-${pkg}
+docker-run: options = $(if ${CI},,-it) --rm --name bauhausphp-${pkg}
 docker-run: volumes := -v ${pkg-dir}:/usr/local/bauhaus
 docker-run: volumes += -v ${composer-cache-dir}:/var/cache/composer
 docker-run:
