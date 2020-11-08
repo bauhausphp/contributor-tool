@@ -1,7 +1,5 @@
 FROM php:8.0.0RC3-cli-alpine
 
-COPY ./ /docker
-
 RUN apk add --no-cache \
         $PHPIZE_DEPS \
         git \
@@ -15,10 +13,10 @@ RUN apk add --no-cache \
     make && \
     make install && \
     docker-php-ext-enable pcov && \
-    mv /docker/pcov.ini /usr/local/etc/php/conf.d/docker-php-pcov.ini && \
     curl --silent --show-error https://getcomposer.org/installer | php -- \
         --version='2.0.6' \
         --install-dir=/usr/local/bin \
         --filename=composer
 
 WORKDIR /usr/local/bauhaus
+ENV COMPOSER_HOME /var/cache/composer
