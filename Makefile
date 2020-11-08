@@ -1,3 +1,5 @@
+CI ?= no
+
 docker-image := bauhausphp/dev:latest
 pkg-dir = $(shell pwd)/pkgs/${pkg}
 composer-cache-dir = $(shell pwd)/docker/.cache/composer
@@ -40,7 +42,8 @@ docker-login:
 docker-push:
 	@docker push ${docker-image}
 
-docker-run: options := -it --rm --name bauhausphp-${pkg}
+docker-run: tty = $(if $(filter ${CI},no),-it)
+docker-run: options = ${tty} --rm --name bauhausphp-${pkg}
 docker-run: volumes := -v ${pkg-dir}:/usr/local/bauhaus
 docker-run: volumes += -v ${composer-cache-dir}:/var/cache/composer
 docker-run:
