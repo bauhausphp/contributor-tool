@@ -25,8 +25,11 @@ composer: docker-run
 update: composer-cmd = update
 update: composer
 
-install: composer-cmd = install
+install: composer-cmd = install --no-autoloader
 install: composer
+
+dump: composer-cmd = dump-autoload
+dump: composer
 
 require: composer-cmd = require ${dep}
 require: composer
