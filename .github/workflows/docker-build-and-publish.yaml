@@ -1,9 +1,5 @@
 name: Docker Build and Publish
 on: push
-defaults:
-  run:
-    shell: bash
-    working-directory: ./docker
 
 jobs:
   publish:
