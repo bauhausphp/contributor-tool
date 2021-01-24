@@ -1,6 +1,10 @@
 name: Docker Publish
+on: pull_request
 
-on: push
+defaults:
+  run:
+    shell: bash
+    working-directory: ./docker
 
 jobs:
   publish:
@@ -10,12 +14,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Build
-      run: make docker-build
-
-    - name: Login
-      run: make docker-login username=${{ secrets.DOCKER_USERNAME }} password=${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Publish
-      run: make docker-push
-      if: github.ref == 'refs/heads/main'
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        no_push: true
+        registry: ghcr.io
+        name: ${{ github.repository }}/package-dev
+        username: fefas
+        password: ${{ secrets.GHRC_TOKEN }}
+        default_branch: main
+        workdir: docker
