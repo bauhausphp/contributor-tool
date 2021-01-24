@@ -17,7 +17,7 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        no_push: true
+        no_push: ${{ github.ref != 'main' }}
         registry: ghcr.io
         name: ${{ github.repository }}/package-dev
         username: fefas
