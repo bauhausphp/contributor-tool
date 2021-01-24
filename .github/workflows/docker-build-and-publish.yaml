@@ -12,7 +12,7 @@ jobs:
     - name: Build and Publish
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        no_push: ${{ github.ref != 'main' }}
+        no_push: ${{ github.ref != 'refs/heads/main' }}
         registry: ghcr.io
         name: ${{ github.repository }}/package-dev
         username: fefas
