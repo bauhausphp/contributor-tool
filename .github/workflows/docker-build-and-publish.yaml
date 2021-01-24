@@ -1,0 +1,25 @@
+name: Docker Build and Publish
+on: pull_request
+defaults:
+  run:
+    shell: bash
+    working-directory: ./docker
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build and Publish
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        no_push: ${{ github.ref != 'main' }}
+        registry: ghcr.io
+        name: ${{ github.repository }}/package-dev
+        username: fefas
+        password: ${{ secrets.GHRC_TOKEN }}
+        default_branch: main
+        workdir: docker

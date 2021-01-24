@@ -1,4 +1,9 @@
-FROM php:8.0.0RC3-cli-alpine
+FROM php:8.0.1-cli-alpine
+
+WORKDIR /usr/local/bauhaus
+
+COPY --from=composer:2.0.8 /usr/bin/composer /usr/bin/composer
+ENV COMPOSER_HOME /var/cache/composer
 
 RUN apk add --no-cache \
         $PHPIZE_DEPS \
@@ -12,11 +17,5 @@ RUN apk add --no-cache \
     ./configure --enable-pcov && \
     make && \
     make install && \
-    docker-php-ext-enable pcov && \
-    curl --silent --show-error https://getcomposer.org/installer | php -- \
-        --version='2.0.6' \
-        --install-dir=/usr/local/bin \
-        --filename=composer
-
-WORKDIR /usr/local/bauhaus
-ENV COMPOSER_HOME /var/cache/composer
+    docker-php-ext-enable \
+        pcov
