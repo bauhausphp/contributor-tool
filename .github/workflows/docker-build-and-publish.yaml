@@ -1,6 +1,5 @@
-name: Docker Publish
+name: Docker Build and Publish
 on: pull_request
-
 defaults:
   run:
     shell: bash
@@ -14,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Publish to Registry
+    - name: Build and Publish
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         no_push: ${{ github.ref != 'main' }}
