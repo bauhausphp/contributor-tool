@@ -1,4 +1,4 @@
-FROM php:8.0.1-cli-alpine
+FROM php:8.0.2-cli-alpine
 
 WORKDIR /usr/local/bauhaus
 
