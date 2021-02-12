@@ -2,7 +2,7 @@ FROM php:8.0.2-cli-alpine
 
 WORKDIR /usr/local/bauhaus
 
-COPY --from=composer:2.0.8 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.0.9 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_HOME /var/cache/composer
 
 RUN apk add --no-cache \
