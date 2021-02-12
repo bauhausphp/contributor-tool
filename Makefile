@@ -1,49 +1,41 @@
-CI ?=
+ifndef package
+$(error package was not provided)
+endif
 
-docker-image := bauhausphp/dev:latest
-pkg-dir = $(shell pwd)/pkgs/${pkg}
-composer-cache-dir = $(shell pwd)/docker/.cache/composer
+packageDir = $(shell pwd)/packages/${package}
+composerCacheDir = $(shell pwd)/docker/.cache/composer
 
 setup: clone install
 
 clone: branch ?= main
-clone: repo = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${pkg}.git
 clone:
-	rm -rf ${pkg-dir}
-	git clone -b ${branch} ${repo} ${pkg-dir}
+	@git clone \
+        -b ${branch} \
+        git@github.com:bauhausphp/${package} \
+        ${packageDir}
+
+update: composerCmd = update
+update: composer
+
+install: composerCmd = install -n
+install: composer
+
+require: composerCmd = require ${dep}
+require: composer
+
+tests: composerCmd = run test:unit
+tests: composer
+
+composer: cmd = composer ${composerCmd}
+composer: docker-run
 
 sh: cmd = sh
 sh: docker-run
 
-composer: cmd = composer ${composer-cmd}
-composer: docker-run
-
-update: composer-cmd = update
-update: composer
-
-install: composer-cmd = install -n
-install: composer
-
-require: composer-cmd = require ${dep}
-require: composer
-
-tests: composer-cmd = run test:unit
-tests: composer
-
-#
-# Docker commands
-
-docker-build:
-	@docker build -t ${docker-image} ./docker
-
-docker-login:
-	@docker login -u ${username} -p ${password}
-
-docker-push:
-	@docker push ${docker-image}
-
-docker-run: options = $(if ${CI},,-it) --rm --name bauhausphp-${pkg}
-docker-run: volumes := -v ${pkg-dir}:/usr/local/bauhaus
-docker-run: volumes += -v ${composer-cache-dir}:/var/cache/composer
 docker-run:
-	docker run ${options} ${volumes} ${docker-image} ${cmd}
+	@docker run --rm -it \
+	    --name bauhausphp-dev-${package} \
+	    -v ${packageDir}:/usr/local/bauhaus \
+	    -v ${composerCacheDir}:/var/cache/composer \
+	    ghcr.io/bauhausphp/contributor-tool/package-dev:latest \
+	    ${cmd}
