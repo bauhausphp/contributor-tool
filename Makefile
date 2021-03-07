@@ -6,7 +6,7 @@ packageDir = $(shell pwd)/packages/${package}
 templateDir = $(shell pwd)/packages/.template
 composerCacheDir = $(shell pwd)/docker/.cache/composer
 
-setup: clone #install
+setup: clone install
 
 clone: branch ?= main
 clone: url = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${package}.git
