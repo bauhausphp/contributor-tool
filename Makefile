@@ -3,33 +3,32 @@ $(error package was not provided)
 endif
 
 packageDir = $(shell pwd)/packages/${package}
+templateDir = $(shell pwd)/packages/.template
 composerCacheDir = $(shell pwd)/docker/.cache/composer
 
-setup: clone install
+setup: clone #install
 
 clone: branch ?= main
+clone: url = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${package}.git
 clone:
-	@git clone \
-        -b ${branch} \
-        git@github.com:bauhausphp/${package} \
-        ${packageDir}
+	echo @git clone -b ${branch} ${url} ${packageDir}
 
-update: composerCmd = update
+update: cmd = update
 update: composer
 
-install: composerCmd = install -n
+install: cmd = install -n
 install: composer
 
-require: composerCmd = require ${dep}
+require: cmd = require ${dep}
 require: composer
 
-tests: composerCmd = run test:unit
+tests: cmd = run tests
 tests: composer
 
-composer: cmd = composer ${composerCmd}
+composer: run = composer ${cmd}
 composer: docker-run
 
-sh: cmd = sh
+sh: run = sh
 sh: docker-run
 
 docker-run:
@@ -38,4 +37,4 @@ docker-run:
 	    -v ${packageDir}:/usr/local/bauhaus \
 	    -v ${composerCacheDir}:/var/cache/composer \
 	    ghcr.io/bauhausphp/contributor-tool/package-dev:latest \
-	    ${cmd}
+	    ${run}
