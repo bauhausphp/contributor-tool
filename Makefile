@@ -21,12 +21,11 @@ install: composer
 require: cmd = require ${dep}
 require: composer
 
-tests: coverage-arg = $(if ${coverage}, --coverage-clover ./coverage.xml)
-tests: cmd = run tests
-tests: composer
-
 composer: run = composer ${cmd}
 composer: docker-run
+
+tests: run = ./vendor/bin/phpunit --testdox --colors=always --coverage-clover ./coverage.xml
+tests: docker-run
 
 sh: run = sh
 sh: docker-run
