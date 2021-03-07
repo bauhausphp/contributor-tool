@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+
+set -eu
+
+PACKAGES_DIR=$(pwd)/packages
+TEMPLATE_DIR=$PACKAGES_DIR/.template
+
+packageDir() {
+  echo $PACKAGES_DIR/$1
+}
+
+replaceFile() {
+  package=$1
+  file=$2
+
+  cp $TEMPLATE_DIR/$file $PACKAGES_DIR/$package/$file
+}
+
+replaceFolder() {
+  package=$1
+  folder=$2
+
+  rm -rf ${PACKAGES_DIR:?}/$package/$folder
+  cp -R $TEMPLATE_DIR/$folder $PACKAGES_DIR/$package/$folder
+}
+
+replacePlaceholder() {
+  package=$1
+  folder=$2
+
+  r="find ./$folder -type f -exec sed -i 's/<PACKAGE>/$package/g' {} + "
+
+  make docker-run package=$package run="$r"
+}
+
+packages=$(ls ./packages)
+
+for p in $packages;
+do
+  replaceFile $p .gitignore
+  replaceFile $p LICENSE
+
+  replaceFolder $p .github
+
+  replacePlaceholder $p .github
+done
