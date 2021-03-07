@@ -31,8 +31,9 @@ composer: docker-run
 sh: run = sh
 sh: docker-run
 
+docker-run: tty = $(if ${CI},,-it)
 docker-run:
-	@docker run --rm -it \
+	@docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
 	    -v ${packageDir}:/usr/local/bauhaus \
 	    -v ${composerCacheDir}:/var/cache/composer \
