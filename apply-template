@@ -39,6 +39,7 @@ for p in $packages;
 do
   replaceFile $p .gitignore
   replaceFile $p LICENSE
+  replaceFile $p phpunit.xml
 
   replaceFolder $p .github
 

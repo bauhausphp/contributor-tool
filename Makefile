@@ -2,8 +2,13 @@ ifndef package
 $(error package was not provided)
 endif
 
+cacheDir = $(shell pwd)/docker/.cache
 packageDir = $(shell pwd)/packages/${package}
-composerCacheDir = $(shell pwd)/docker/.cache/composer
+reportsDir = $(shell pwd)/reports/${package}
+
+composerCacheDir = ${cacheDir}/composer
+phpunitCacheDir = ${cacheDir}/phpunit/${package}
+phpunitCoverageDir = ${reportsDir}/coverage
 
 setup: clone install
 
@@ -24,7 +29,7 @@ require: composer
 composer: run = composer ${cmd}
 composer: docker-run
 
-tests: run = ./vendor/bin/phpunit --testdox --colors=always --coverage-clover ./coverage.xml
+tests: run = phpunit
 tests: docker-run
 
 sh: run = sh
@@ -36,5 +41,7 @@ docker-run:
 	    --name bauhausphp-dev-${package} \
 	    -v ${packageDir}:/usr/local/bauhaus \
 	    -v ${composerCacheDir}:/var/cache/composer \
+	    -v ${phpunitCacheDir}:/var/cache/phpunit \
+	    -v ${phpunitCoverageDir}:/var/tmp/coverage \
 	    ghcr.io/bauhausphp/contributor-tool/package-dev:latest \
 	    ${run}

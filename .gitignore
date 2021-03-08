@@ -1,3 +1,5 @@
+docker/.cache
+reports/*
+!reports/.gitkeep
 packages/*
 !packages/.template
-docker/.cache
