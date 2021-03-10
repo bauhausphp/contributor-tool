@@ -2,22 +2,8 @@ FROM php:8.0.2-cli-alpine
 
 WORKDIR /usr/local/bauhaus
 
-COPY --from=composer:2.0.9 /usr/bin/composer /usr/bin/composer
-
 ENV COMPOSER_HOME /var/cache/composer
 ENV PATH $PATH:/usr/local/bauhaus/vendor/bin
 
-RUN apk add --no-cache \
-        $PHPIZE_DEPS \
-        git \
-        openssh \
-        vim && \
-    mkdir -p /opt/php-libs  cd /opt/php-libs && \
-    git clone https://github.com/krakjoe/pcov.git /opt/php-libs/pcov && \
-    cd /opt/php-libs/pcov && \
-    phpize && \
-    ./configure --enable-pcov && \
-    make && \
-    make install && \
-    docker-php-ext-enable \
-        pcov
+COPY ./installs /root/
+RUN sh /root/installs
