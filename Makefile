@@ -38,7 +38,7 @@ composer: docker-run
 tests: run = phpunit --coverage-clover ${containerCoverageClover} --coverage-html ${containerCoverageHtml}
 tests: docker-run
 
-coverage: run = coveralls -c coveralls.yaml -x ${containerCoverageClover} -o ${containerCoverallsOutput}
+coverage: run = coveralls -x ${containerCoverageClover} -o ${containerCoverallsOutput}
 coverage: docker-run
 
 sh: run = sh
@@ -48,6 +48,7 @@ docker-run: tty = $(if ${CI},,-it)
 docker-run:
 	@docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
+	    --env-file .docker-run.env \
 	    -v ${hostPackageDir}:${containerWorkDir} \
 	    -v ${hostComposerCacheDir}:${containerComposerCacheDir} \
 	    -v ${hostPhpunitCacheDir}:${containerPhpunitCacheDir} \
