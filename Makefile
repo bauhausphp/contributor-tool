@@ -9,6 +9,8 @@ reportsDir = $(shell pwd)/reports/${package}
 composerCacheDir = ${cacheDir}/composer
 phpunitCacheDir = ${cacheDir}/phpunit/${package}
 phpunitCoverageDir = ${reportsDir}/coverage
+phpunitCoverageClover = ${phpunitCoverageDir}/clover.xml
+phpunitCoverageHtml = ${phpunitCoverageDir}/html
 
 setup: clone install
 
@@ -29,8 +31,14 @@ require: composer
 composer: run = composer ${cmd}
 composer: docker-run
 
-tests: run = phpunit
+tests: cloverOutput =
+tests: htmlOutput =
+tests: run = phpunit --covarage-clover ${phpunitCoverageClover} --covarage-html ${phpunitCoverageHtml}
 tests: docker-run
+
+coverage: coverageClover = -x ${phpunitCoverageClover}
+coverage: run = coveralls
+coverage: docker-run
 
 sh: run = sh
 sh: docker-run

@@ -21,8 +21,5 @@ jobs:
       run: make tests package=<PACKAGE>
 
     - name: Coverage
-      uses: codecov/codecov-action@v1.0.13
-      with:
-        file: ./reports/<PACKAGE>/coverage/clover.xml
-        fail_ci_if_error: true
+      run: make coverage package=<PACKAGE>
 
