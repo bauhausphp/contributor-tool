@@ -14,7 +14,7 @@ jobs:
       with:
         no_push: ${{ github.ref != 'refs/heads/main' }}
         registry: ghcr.io
-        name: ${{ github.repository }}/package-dev
+        name: ${{ github.repository }}
         username: fefas
         password: ${{ secrets.GHRC_TOKEN }}
         default_branch: main

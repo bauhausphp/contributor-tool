@@ -51,5 +51,5 @@ docker-run:
 	    -v ${composerCacheDir}:/var/cache/composer \
 	    -v ${phpunitCacheDir}:/var/cache/phpunit \
 	    -v ${phpunitCoverageDir}:/var/tmp/coverage \
-	    ghcr.io/bauhausphp/contributor-tool/package-dev:latest \
+	    ghcr.io/bauhausphp/contributor-tool:latest \
 	    ${run}
