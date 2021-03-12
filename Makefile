@@ -2,22 +2,26 @@ ifndef package
 $(error package was not provided)
 endif
 
-cacheDir = $(shell pwd)/docker/.cache
-packageDir = $(shell pwd)/packages/${package}
-reportsDir = $(shell pwd)/reports/${package}
+hostPackageDir = $(shell pwd)/packages/${package}
+hostComposerCacheDir = $(shell pwd)/docker/.cache/composer
+hostPhpunitCacheDir = $(shell pwd)/docker/.cache/phpunit/${package}
+hostReportsDir = $(shell pwd)/reports/${package}
 
-composerCacheDir = ${cacheDir}/composer
-phpunitCacheDir = ${cacheDir}/phpunit/${package}
-phpunitCoverageDir = ${reportsDir}/coverage
-phpunitCoverageClover = ${phpunitCoverageDir}/clover.xml
-phpunitCoverageHtml = ${phpunitCoverageDir}/html
+containerWorkDir = /usr/local/bauhaus
+containerComposerCacheDir = /var/cache/composer
+containerPhpunitCacheDir = /var/cache/phpunit
+containerReportsDir = /var/tmp/reports
+
+containerCoverageClover = ${containerReportsDir}/coverage/clover.xml
+containerCoverageHtml = ${containerReportsDir}/coverage/html
+containerCoverallsOutput = ${containerReportsDir}/coverage/coveralls.json
 
 setup: clone install
 
 clone: branch ?= main
 clone: url = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${package}.git
 clone:
-	@git clone -b ${branch} ${url} ${packageDir}
+	@git clone -b ${branch} ${url} ${hostPackageDir}
 
 update: cmd = update
 update: composer
@@ -31,13 +35,10 @@ require: composer
 composer: run = composer ${cmd}
 composer: docker-run
 
-tests: cloverOutput =
-tests: htmlOutput =
-tests: run = phpunit --covarage-clover ${phpunitCoverageClover} --covarage-html ${phpunitCoverageHtml}
+tests: run = phpunit --coverage-clover ${containerCoverageClover} --coverage-html ${containerCoverageHtml}
 tests: docker-run
 
-coverage: coverageClover = -x ${phpunitCoverageClover}
-coverage: run = coveralls
+coverage: run = coveralls -c coveralls.yaml -x ${containerCoverageClover} -o ${containerCoverallsOutput}
 coverage: docker-run
 
 sh: run = sh
@@ -47,9 +48,9 @@ docker-run: tty = $(if ${CI},,-it)
 docker-run:
 	@docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
-	    -v ${packageDir}:/usr/local/bauhaus \
-	    -v ${composerCacheDir}:/var/cache/composer \
-	    -v ${phpunitCacheDir}:/var/cache/phpunit \
-	    -v ${phpunitCoverageDir}:/var/tmp/coverage \
+	    -v ${hostPackageDir}:${containerWorkDir} \
+	    -v ${hostComposerCacheDir}:${containerComposerCacheDir} \
+	    -v ${hostPhpunitCacheDir}:${containerPhpunitCacheDir} \
+	    -v ${hostReportsDir}:${containerReportsDir} \
 	    ghcr.io/bauhausphp/contributor-tool:latest \
 	    ${run}
