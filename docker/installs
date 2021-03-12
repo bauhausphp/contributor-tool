@@ -26,6 +26,6 @@ make install
 docker-php-ext-enable pcov
 
 # Install coveralls
-wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.3/php-coveralls.phar -o /usr/local/bin/coveralls
+wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.3/php-coveralls.phar -O /usr/local/bin/coveralls
 chmod +x /usr/local/bin/coveralls
 
