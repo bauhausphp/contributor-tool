@@ -38,7 +38,7 @@ composer: docker-run
 tests: run = phpunit --coverage-clover ${containerCoverageClover} --coverage-html ${containerCoverageHtml}
 tests: docker-run
 
-coverage: run = coveralls -x ${containerCoverageClover} -o ${containerCoverallsOutput}
+coverage: run = coveralls -vvv -x ${containerCoverageClover} -o ${containerCoverallsOutput}
 coverage: docker-run
 
 sh: run = sh
