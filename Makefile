@@ -4,14 +4,11 @@ endif
 
 hostPackageDir = $(shell pwd)/packages/${package}
 hostComposerCacheDir = $(shell pwd)/docker/.cache/composer
-hostPhpunitCacheDir = $(shell pwd)/docker/.cache/phpunit/${package}
 hostReportsDir = $(shell pwd)/reports/${package}
 
 containerWorkDir = /usr/local/bauhaus
 containerComposerCacheDir = /var/cache/composer
-containerPhpunitCacheDir = /var/cache/phpunit
 containerReportsDir = /var/tmp/reports
-
 containerCoverageClover = ${containerReportsDir}/coverage/clover.xml
 containerCoverageHtml = ${containerReportsDir}/coverage/html
 containerCoverallsOutput = ${containerReportsDir}/coverage/coveralls.json
@@ -51,7 +48,6 @@ docker-run:
 	    --env-file .docker-run.env \
 	    -v ${hostPackageDir}:${containerWorkDir} \
 	    -v ${hostComposerCacheDir}:${containerComposerCacheDir} \
-	    -v ${hostPhpunitCacheDir}:${containerPhpunitCacheDir} \
 	    -v ${hostReportsDir}:${containerReportsDir} \
 	    ghcr.io/bauhausphp/contributor-tool:latest \
 	    ${run}
