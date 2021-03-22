@@ -44,8 +44,8 @@ test-cs: docker-run
 test-unit: run = phpunit --coverage-clover ${coverageOutputDir}/clover.xml --coverage-html ${coverageOutputDir}/html
 test-unit: docker-run
 
-test-infection: githubLogger = $(if ${CI},--logger-github)
-test-infection: run = infection -s --min-msi=100 --min-covered-msi=100 ${githubLogger}
+test-infection: githubArgs = $(if ${CI},--logger-github --git-diff-filter=A --git-diff-base=origin/$GITHUB_BASE_REF)
+test-infection: run = infection -j2 -s --min-msi=100 --min-covered-msi=100 ${githubArgs}
 test-infection: docker-run
 
 coverage: run = coveralls -vvv -x ${coverageOutputDir}/clover.xml -o ${coverageOutputDir}/coveralls.json
