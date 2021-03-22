@@ -38,6 +38,7 @@ packages=$(ls ./packages)
 for p in $packages;
 do
   replaceFile $p .gitignore
+  replaceFile $p infection.json
   replaceFile $p LICENSE
   replaceFile $p phpcs.xml
   replaceFile $p phpunit.xml

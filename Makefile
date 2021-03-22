@@ -36,12 +36,17 @@ sh: docker-run
 tests:
 	${MAKE} test-cs
 	${MAKE} test-unit
+	${MAKE} test-infection
 
 test-cs: run = phpcs -ps
 test-cs: docker-run
 
 test-unit: run = phpunit --coverage-clover ${coverageOutputDir}/clover.xml --coverage-html ${coverageOutputDir}/html
 test-unit: docker-run
+
+test-infection: githubLogger = $(if ${CI},--logger-github)
+test-infection: run = infection -s --min-msi=100 --min-covered-msi=100 ${githubLogger}
+test-infection: docker-run
 
 coverage: run = coveralls -vvv -x ${coverageOutputDir}/clover.xml -o ${coverageOutputDir}/coveralls.json
 coverage: docker-run
