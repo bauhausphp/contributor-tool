@@ -6,12 +6,10 @@ hostPackageDir = $(shell pwd)/packages/${package}
 hostComposerCacheDir = $(shell pwd)/docker/.cache/composer
 hostReportsDir = $(shell pwd)/reports/${package}
 
-containerWorkDir = /usr/local/bauhaus
-containerComposerCacheDir = /var/cache/composer
-containerReportsDir = /var/tmp/reports
-containerCoverageClover = ${containerReportsDir}/coverage/clover.xml
-containerCoverageHtml = ${containerReportsDir}/coverage/html
-containerCoverallsOutput = ${containerReportsDir}/coverage/coveralls.json
+workDir = /usr/local/bauhaus
+composerCacheDir = /var/cache/composer
+reportsDir = /var/tmp/reports
+coverageOutputDir = ${reportsDir}/coverage
 
 setup: clone install
 
@@ -32,22 +30,29 @@ require: composer
 composer: run = composer ${cmd}
 composer: docker-run
 
-tests: run = phpunit --coverage-clover ${containerCoverageClover} --coverage-html ${containerCoverageHtml}
-tests: docker-run
-
-coverage: run = coveralls -vvv -x ${containerCoverageClover} -o ${containerCoverallsOutput}
-coverage: docker-run
-
 sh: run = sh
 sh: docker-run
+
+tests:
+	${MAKE} test-cs
+	${MAKE} test-unit
+
+test-cs: run = phpcs -ps
+test-cs: docker-run
+
+test-unit: run = phpunit --coverage-clover ${coverageOutputDir}/clover.xml --coverage-html ${coverageOutputDir}/html
+test-unit: docker-run
+
+coverage: run = coveralls -vvv -x ${coverageOutputDir}/clover.xml -o ${coverageOutputDir}/coveralls.json
+coverage: docker-run
 
 docker-run: tty = $(if ${CI},,-it)
 docker-run:
 	@docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
 	    --env-file .docker-run.env \
-	    -v ${hostPackageDir}:${containerWorkDir} \
-	    -v ${hostComposerCacheDir}:${containerComposerCacheDir} \
-	    -v ${hostReportsDir}:${containerReportsDir} \
+	    -v ${hostPackageDir}:${workDir} \
+	    -v ${hostComposerCacheDir}:${composerCacheDir} \
+	    -v ${hostReportsDir}:${reportsDir} \
 	    ghcr.io/bauhausphp/contributor-tool:latest \
 	    ${run}
