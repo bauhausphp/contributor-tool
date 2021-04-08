@@ -38,6 +38,9 @@ tests:
 	${MAKE} test-unit
 	${MAKE} test-infection
 
+fix-cs: run = phpcbf
+fix-cs: docker-run
+
 test-cs: run = phpcs -ps
 test-cs: docker-run
 
