@@ -2,12 +2,14 @@ ifndef package
 $(error package was not provided)
 endif
 
+defaultBranch = main
+
 #
 # Setup
 setup: clone install
 
 clone: dir = $(shell pwd)/packages/${package}
-clone: branch ?= main
+clone: branch ?= ${defaultBranch}
 clone: url = $(if ${CI},${urlHttps},${urlGit})
 clone: urlGit = git@github.com:bauhausphp/${package}.git
 clone: urlHttps = https://github.com/bauhausphp/${package}.git
