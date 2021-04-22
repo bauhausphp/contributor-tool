@@ -2,20 +2,33 @@ name: Docker
 on: push
 
 jobs:
-  publish:
+  tests:
+    name: Tests published packages
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Build
+      run: make -C docker build tag=RC
+    - name: Test all packages
+      run: |
+        for p in $(cat ./published-packages.txt); do
+          make setup package=$p
+          make tests tag=RC package=$p
+        done
 
-    - name: Build and Publish
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        no_push: ${{ github.ref != 'refs/heads/main' }}
-        registry: ghcr.io
-        name: ${{ github.repository }}
-        username: fefas
-        password: ${{ secrets.GHRC_TOKEN }}
-        default_branch: main
-        workdir: docker
+  publish:
+    name: Publish new docker image
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+    - tests
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build
+      run: make -C docker build
+    - name: Login
+      run: make -C docker login username=fefas password=${{ secrets.GHRC_TOKEN }}
+    - name: Push
+      run: make -C docker push
