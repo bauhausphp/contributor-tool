@@ -28,3 +28,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Build
       run: make -C docker build
+    - name: Login
+      run: make -C docker login username=fefas password=${{ secrets.GHRC_TOKEN }}
+    #- name: Push
+    #  run: make -C docker push
