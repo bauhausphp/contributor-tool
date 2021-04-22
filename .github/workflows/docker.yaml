@@ -4,10 +4,12 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Build
-        run: make -C docker build tag=RC
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build
+      run: make -C docker build tag=RC
+    - name: Test all packages
+      run: |
+        PACKAGES=$(cat ./published-packages.txt)
+        for p in $PACKAGES; do make tests tag=RC package=$p; done
