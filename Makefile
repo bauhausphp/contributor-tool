@@ -50,7 +50,7 @@ coverage: run-docker
 #
 # General
 run-docker:
-	@echo make -C docker run tag=${tag} package=${package} cmd='${cmd}'
+	@make -C docker run tag=${tag} package=${package} cmd='${cmd}'
 
 sh: cmd = sh
 sh: run-docker
