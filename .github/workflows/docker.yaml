@@ -12,4 +12,7 @@ jobs:
     - name: Test all packages
       run: |
         PACKAGES=$(cat ./published-packages.txt)
-        for p in $PACKAGES; do make tests tag=RC package=$p; done
+        for p in $PACKAGES; do
+          make setup package=$p
+          make tests tag=RC package=$p
+        done
