@@ -10,7 +10,7 @@ clone: dir = $(shell pwd)/packages/${package}
 clone: branch ?= main
 clone: url = $(if ${CI},${urlHttps},${urlGit})
 clone: urlGit = git@github.com:bauhausphp/${package}.git
-clone: urlHttps = https://github.com/bauhaus/${package}.git
+clone: urlHttps = https://github.com/bauhausphp/${package}.git
 clone:
 	@git clone -b ${branch} ${url} ${dir}
 
