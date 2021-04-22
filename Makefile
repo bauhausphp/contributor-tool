@@ -2,65 +2,58 @@ ifndef package
 $(error package was not provided)
 endif
 
-hostPackageDir = $(shell pwd)/packages/${package}
-hostComposerCacheDir = $(shell pwd)/docker/.cache/composer
-hostReportsDir = $(shell pwd)/reports/${package}
-
-workDir = /usr/local/bauhaus
-composerCacheDir = /var/cache/composer
-reportsDir = /var/tmp/reports
-coverageOutputDir = ${reportsDir}/coverage
-
+#
+# Setup
 setup: clone install
 
+clone: dir = $(shell pwd)/packages/${package}
 clone: branch ?= main
-clone: url = $(if ${CI},https://github.com/,git@github.com:)bauhausphp/${package}.git
+clone: url = $(if ${CI},${urlHttps},${urlGit})
+clone: urlGit = git@github.com:bauhausphp/${package}.git
+clone: urlHttps = https://github.com/bauhaus/${package}.git
 clone:
-	@git clone -b ${branch} ${url} ${hostPackageDir}
+	@git clone -b ${branch} ${url} ${dir}
 
-update: cmd = update
-update: composer
+#
+# Composer
+update: cmd = composer update
+update: run-docker
 
-install: cmd = install -n
-install: composer
+install: cmd = composer install -n
+install: run-docker
 
-require: cmd = require ${dep}
-require: composer
+require: cmd = composer require ${dep}
+require: run-docker
 
-composer: run = composer ${cmd}
-composer: docker-run
-
-sh: run = sh
-sh: docker-run
-
+#
+# Test
 tests:
-	${MAKE} test-cs
-	${MAKE} test-unit
-	${MAKE} test-infection
+	@make test-cs
+	@make test-unit
+	@make test-infection
 
-fix-cs: run = phpcbf
-fix-cs: docker-run
+test-cs: cmd = phpcs -ps
+test-cs: run-docker
 
-test-cs: run = phpcs -ps
-test-cs: docker-run
+test-unit: filterArg = $(if ${filter}, --filter=${filter})
+test-unit: coverageArg = --coverage-clover reports/clover.xml --coverage-html reports/html
+test-unit: cmd = phpunit ${filterArg} ${coverageArg}
+test-unit: run-docker
 
-test-unit: run = phpunit --coverage-clover ${coverageOutputDir}/clover.xml --coverage-html ${coverageOutputDir}/html
-test-unit: docker-run
+test-infection: githubArgs = $(if ${CI},--logger-github --git-diff-filter=A --git-diff-base=origin/${defaultBranch})
+test-infection: cmd = infection -j2 -s --min-msi=100 --min-covered-msi=100 ${githubArgs}
+test-infection: run-docker
 
-test-infection: run = infection -j2 -s --min-msi=100 --min-covered-msi=100 ${githubArgs}
-test-infection: githubArgs = $(if ${CI},--logger-github --git-diff-filter=A --git-diff-base=origin/main)
-test-infection: docker-run
+coverage: cmd = coveralls -vvv -x reports/clover.xml -o reports/coveralls.json
+coverage: run-docker
 
-coverage: run = coveralls -vvv -x ${coverageOutputDir}/clover.xml -o ${coverageOutputDir}/coveralls.json
-coverage: docker-run
+#
+# General
+run-docker:
+	@echo make -C docker run tag=${tag} package=${package} cmd='${cmd}'
 
-docker-run: tty = $(if ${CI},,-it)
-docker-run:
-	@docker run --rm ${tty} \
-	    --name bauhausphp-dev-${package} \
-	    --env-file .docker-run.env \
-	    -v ${hostPackageDir}:${workDir} \
-	    -v ${hostComposerCacheDir}:${composerCacheDir} \
-	    -v ${hostReportsDir}:${reportsDir} \
-	    ghcr.io/bauhausphp/contributor-tool:latest \
-	    ${run}
+sh: cmd = sh
+sh: run-docker
+
+fix-cs: cmd = phpcbf
+fix-cs: run-docker
