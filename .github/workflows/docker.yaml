@@ -2,20 +2,12 @@ name: Docker
 on: push
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Build and Publish
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        no_push: ${{ github.ref != 'refs/heads/main' }}
-        registry: ghcr.io
-        name: ${{ github.repository }}
-        username: fefas
-        password: ${{ secrets.GHRC_TOKEN }}
-        default_branch: main
-        workdir: docker
+      - name: Build
+        run: make -C docker build tag=RC
