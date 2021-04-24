@@ -2,6 +2,18 @@ name: Docker
 on: push
 
 jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: make -C docker build tag=RC
+    - run: make -C docker save tag=RC output=new-image.tar
+    - uses: actions/upload-artifact@v2
+      with:
+       name: new-image
+       path: docker/new-image.tar
+
   #tests:
   #  name: Tests packages
   #  runs-on: ubuntu-latest

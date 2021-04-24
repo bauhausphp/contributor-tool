@@ -12,6 +12,9 @@ reportsDir = /var/tmp/reports
 build:
 	@docker build -t ${image} .
 
+save:
+	@docker save ${image} -o ${output}
+
 login:
 	@echo ${password} | docker login ${registry} -u ${username} --password-stdin
 
