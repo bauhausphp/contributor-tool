@@ -13,7 +13,7 @@ build:
 	@docker build -t ${image} .
 
 login:
-	@docker login ${registry} -u ${username} -p ${password}
+	@echo ${password} | docker login ${registry} -u ${username} --password-stdin
 
 push:
 	@docker push ${image}
