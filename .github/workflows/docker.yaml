@@ -6,20 +6,17 @@ jobs:
     name: Build release condidate image
     runs-on: ubuntu-latest
     outputs:
-      compare: ${{ steps.step1.outputs.test }}
+      compare: ${{ steps.compare.outputs.compare }}
     steps:
-    #- name: Checkout
-    #  uses: actions/checkout@v2
-    #- name: Pull latest image
-    #  run: make -C docker pull tag=latest
-    #- name: Build new image
-    #  run: make -C docker build tag=RC
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Pull latest image
+      run: make -C docker pull tag=latest
+    - name: Build new image
+      run: make -C docker build tag=RC
     - name: Compare images
-      id: step1
-      run: echo "::set-output name=test::hello"
-      #run: |
-      #  make -C docker save tag=latest output=image-latest.tar
-      #  make -C docker save tag=RC output=image-rc.tar
+      id: compare
+      run: echo "::set-output name=compare::$(make -C docker compare tag1=RC tag2=latest)"
     #- uses: actions/upload-artifact@v2
     #  with:
     #   name: new-image
