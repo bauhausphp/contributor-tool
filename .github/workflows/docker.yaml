@@ -18,7 +18,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
        name: release-candidate-image
-       path: release-candidate-image.tar
+       path: docker/release-candidate-image.tar
 
   tests:
     name: Test published packages
@@ -29,7 +29,7 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: release-candidate-image
-        path: release-candidate-image.tar
+        path: docker/
     - run: make import tag=RC file=release-candidate-image.tar
     - run: |
         cd ..
