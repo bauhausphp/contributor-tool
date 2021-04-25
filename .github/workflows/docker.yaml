@@ -6,50 +6,27 @@ defaults:
     working-directory: ./docker
 
 jobs:
-  build:
-    name: Build release candidate image
-    runs-on: ubuntu-latest
-    outputs:
-      compare: ${{ steps.compare.outputs.test }}
-    steps:
-    - uses: actions/checkout@v2
-    - run: make build tag=RC
-    - run: make save tag=RC output=release-candidate-image.tar
-    - uses: actions/upload-artifact@v2
-      with:
-       name: release-candidate-image
-       path: docker/release-candidate-image.tar
-
   tests:
     name: Test published packages
     runs-on: ubuntu-latest
     needs: build
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/download-artifact@v2
-      with:
-        name: release-candidate-image
-        path: docker/
-    - run: make import tag=RC file=release-candidate-image.tar
+    - run: make build tag=RC
     - run: |
         for p in $(cat ./published-packages.txt); do
-          make setup package=$p
+          make setup tag=RC package=$p
           make tests tag=RC package=$p
         done
       working-directory: ./
 
-  #publish:
-  #  name: Publish
-  #  runs-on: ubuntu-latest
-  #  #if: ${{ github.ref == 'refs/heads/main' }}
-  #  needs: tests
-  #  steps:
-  #  - uses: actions/checkout@v2
-  #  - run: make -C docker build
-  #  #- run: make pull tag=latest
-  #  #- id: compare
-  #  #  run: echo "::set-output name=test::$(make compare tag1=RC tag2=latest)"
-  #  - name: Login
-  #    run: make -C docker login username=fefas password=${{ secrets.GHRC_TOKEN }}
-  #  #- name: Push
-  #  #  run: make -C docker push
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: tests
+    steps:
+    - uses: actions/checkout@v2
+    - run: make build
+    - run: make login username=fefas password=${{ secrets.GHRC_TOKEN }}
+    - run: make push
