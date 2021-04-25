@@ -11,7 +11,7 @@ cacheDir = /var/cache
 reportsDir = /var/tmp/reports
 
 build:
-	@docker build -t ${image}:${tag} ${cacheFrom} .
+	@docker build -t ${image}:${tag} .
 
 save:
 	@docker save ${image}:${tag} -o ${output}

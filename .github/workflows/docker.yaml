@@ -34,7 +34,7 @@ jobs:
     - run: |
         for p in $(cat ./published-packages.txt); do
           make setup package=$p
-          make tests tag=RC package=$p
+          make tests imageTag=RC package=$p
         done
       working-directory: ./
 

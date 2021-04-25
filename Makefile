@@ -51,8 +51,9 @@ coverage: run-docker
 
 #
 # General
+run-docker: imageTag ?= latest
 run-docker:
-	@make -C docker run tag=${tag} package=${package} cmd='${cmd}'
+	@make -C docker run tag=${imageTag} package=${package} cmd='${cmd}'
 
 sh: cmd = sh
 sh: run-docker
