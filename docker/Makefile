@@ -36,7 +36,7 @@ pull:
 run: tty = $(if ${CI},,-it)
 run: handledCmd = $(subst reports/,${hostReportsDir}/,${cmd})
 run:
-	@docker run --rm ${tty} \
+	docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
 	    --env-file run.env \
 	    -v ${hostPackageDir}:${workDir} \
