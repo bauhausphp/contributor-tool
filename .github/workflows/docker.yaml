@@ -11,14 +11,10 @@ jobs:
     outputs:
       compare: ${{ steps.compare.outputs.test }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Pull latest image
-      run: make pull tag=latest
-    - name: Build new image
-      run: make build tag=RC
+    - uses: actions/checkout@v2
+    - run: make pull tag=latest
+    - run: make build tag=RC
     - id: compare
-      name: Compare images
       run: echo "::set-output name=test::$(make compare tag1=RC tag2=latest)"
     #- uses: actions/upload-artifact@v2
     #  with:
@@ -28,6 +24,7 @@ jobs:
   test-output:
     runs-on: ubuntu-latest
     needs: build
+    if: ${{ needs.build.outputs.compare == 'equal' }}
     steps:
     - run: echo '${{ needs.build.outputs.compare }}'
 
