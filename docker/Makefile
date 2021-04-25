@@ -19,7 +19,7 @@ save:
 compare: sha1 = $(shell docker images --no-trunc --quiet ${image}:${tag1})
 compare: sha2 = $(shell docker images --no-trunc --quiet ${image}:${tag2})
 compare:
-	@[[ "${sha1}" == "${sha2}" ]] && echo "equal" || echo "not equal"
+	@echo '[[ "${sha1}" == "${sha2}" ]] && echo "equal" || echo "not equal"' | bash
 
 login:
 	@echo ${password} | docker login ${registry} -u ${username} --password-stdin

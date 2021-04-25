@@ -1,6 +1,11 @@
 name: Docker
 on: push
 
+defaults:
+  run:
+    shell: bash
+    working-directory: docker
+
 jobs:
   build:
     name: Build release condidate image
@@ -11,12 +16,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Pull latest image
-      run: make -C docker pull tag=latest
+      run: make pull tag=latest
     - name: Build new image
-      run: make -C docker build tag=RC
+      run: make build tag=RC
     - name: Compare images
       id: compare
-      run: echo "::set-output name=compare::$(make -C docker compare tag1=RC tag2=latest)"
+      run: echo "::set-output name=compare::$(make compare tag1=RC tag2=latest)"
     #- uses: actions/upload-artifact@v2
     #  with:
     #   name: new-image
