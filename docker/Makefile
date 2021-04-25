@@ -21,6 +21,9 @@ login:
 push:
 	@docker push ${image}
 
+pull:
+	@docker pull ${image}
+
 run: tty = $(if ${CI},,-it)
 run: handledCmd = $(subst reports/,${hostReportsDir}/,${cmd})
 run:
