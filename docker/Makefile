@@ -1,5 +1,6 @@
 registry = ghcr.io
-image = ${registry}/bauhausphp/contributor-tool:$(if ${tag},${tag},latest)
+image = ${registry}/bauhausphp/contributor-tool
+tag ?= latest
 
 hostPackageDir = $(shell pwd)/../packages/${package}
 hostCacheDir = $(shell pwd)/../docker/.cache
@@ -10,13 +11,13 @@ cacheDir = /var/cache
 reportsDir = /var/tmp/reports
 
 build:
-	@docker build -t ${image} .
+	@docker build -t ${image}:${tag} .
 
 login:
-	@docker login ${registry} -u ${username} -p ${password}
+	@echo ${password} | docker login ${registry} -u ${username} --password-stdin
 
 push:
-	@docker push ${image}
+	@docker push ${image}:${tag}
 
 run: tty = $(if ${CI},,-it)
 run: handledCmd = $(subst reports/,${hostReportsDir}/,${cmd})
@@ -27,5 +28,5 @@ run:
 	    -v ${hostPackageDir}:${workDir} \
 	    -v ${hostCacheDir}:${cacheDir} \
 	    -v ${hostReportsDir}:${reportsDir} \
-	    ${image} \
+	    ${image}:${tag} \
 	    ${handledCmd}

@@ -1,0 +1,31 @@
+name: CI
+on: push
+
+defaults:
+  run:
+    working-directory: ./docker
+
+jobs:
+  tests:
+    name: Test published packages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: make build tag=RC
+    - run: |
+        for p in $(cat ./published-packages.txt); do
+          make setup tag=RC package=$p
+          make tests tag=RC package=$p
+        done
+      working-directory: ./
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: tests
+    steps:
+    - uses: actions/checkout@v2
+    - run: make build
+    - run: make login username=fefas password=${{ secrets.GHRC_TOKEN }}
+    - run: make push
