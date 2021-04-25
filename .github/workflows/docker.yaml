@@ -3,11 +3,11 @@ on: push
 
 defaults:
   run:
-    working-directory: docker
+    working-directory: ./docker
 
 jobs:
   build:
-    name: Build release condidate image
+    name: Build release candidate image
     runs-on: ubuntu-latest
     outputs:
       compare: ${{ steps.compare.outputs.test }}
@@ -32,11 +32,11 @@ jobs:
         path: docker/
     - run: make import tag=RC file=release-candidate-image.tar
     - run: |
-        cd ..
         for p in $(cat ./published-packages.txt); do
           make setup package=$p
           make tests tag=RC package=$p
         done
+      working-directory: ./
 
   #publish:
   #  name: Publish
