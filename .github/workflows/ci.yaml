@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: make build tag=RC
+    - run: make build
     - run: |
         for p in $(cat ./published-packages.txt); do
-          make setup tag=RC package=$p
-          make tests tag=RC package=$p
+          make setup package=$p
+          make tests package=$p
         done
       working-directory: ./
 

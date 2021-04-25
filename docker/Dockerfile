@@ -23,5 +23,5 @@ RUN apk add --no-cache \
         --install-dir=/usr/local/bin \
         --filename=composer
 
-COPY composer.* $COMPOSER_HOME
-RUN composer global install --no-cache --no-autoloader
+COPY composer.* $COMPOSER_HOME/
+RUN composer global install --prefer-dist --no-cache --no-autoloader
