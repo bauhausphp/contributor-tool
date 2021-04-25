@@ -16,6 +16,9 @@ build:
 save:
 	@docker save ${image}:${tag} -o ${output}
 
+import:
+	@docker import ${file} ${image}:${tag}
+
 compare: sha1 = $(shell docker images --no-trunc --quiet ${image}:${tag1})
 compare: sha2 = $(shell docker images --no-trunc --quiet ${image}:${tag2})
 compare:
