@@ -24,6 +24,6 @@ RUN apk add --no-cache \
         --filename=composer
 
 COPY composer.* $COMPOSER_HOME/
-RUN composer global install --prefer-dist --no-cache --no-autoloader
+RUN composer global install --prefer-dist --no-cache
 
 WORKDIR /usr/local/bauhaus
