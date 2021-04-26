@@ -5,17 +5,16 @@ updates:
   directory: "/docker"
   schedule:
     interval: daily
-    time: 04:00
+    time: '04:00'
     timezone: Europe/Berlin
   assignees:
   - fefas
-  versioning-strategy: increase
 
 - package-ecosystem: composer
   directory: "/docker"
   schedule:
     interval: daily
-    time: 04:00
+    time: '04:00'
     timezone: Europe/Berlin
   assignees:
   - fefas
