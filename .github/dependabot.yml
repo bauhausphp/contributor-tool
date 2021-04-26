@@ -1,8 +1,22 @@
 version: 2
+
 updates:
 - package-ecosystem: docker
   directory: "/docker"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
-  target-branch: main
+    time: 04:00
+    timezone: Europe/Berlin
+  assignees:
+  - fefas
+  versioning-strategy: increase
+
+- package-ecosystem: composer
+  directory: "/docker"
+  schedule:
+    interval: daily
+    time: 04:00
+    timezone: Europe/Berlin
+  assignees:
+  - fefas
+  versioning-strategy: increase
