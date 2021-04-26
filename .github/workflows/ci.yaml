@@ -16,6 +16,7 @@ jobs:
         for p in $(cat ./published-packages.txt); do
           make setup package=$p
           make tests package=$p
+          make coverage package=$p dryrun=y
         done
       working-directory: ./
 
