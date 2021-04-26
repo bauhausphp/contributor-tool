@@ -46,7 +46,8 @@ test-infection: githubArgs = $(if ${CI},--logger-github --git-diff-filter=A --gi
 test-infection: cmd = infection -j2 -s --min-msi=100 --min-covered-msi=100 ${githubArgs}
 test-infection: run-docker
 
-coverage: cmd = coveralls -vvv -x reports/clover.xml -o reports/coveralls.json
+coverage: options  = -vvv -x reports/clover.xml -o reports/coveralls.json $(if ${dryrun},--dry-run)
+coverage: cmd = php-coveralls ${options}
 coverage: run-docker
 
 #
