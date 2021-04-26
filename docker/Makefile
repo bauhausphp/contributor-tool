@@ -3,7 +3,7 @@ image = ${registry}/bauhausphp/contributor-tool
 tag ?= latest
 
 hostPackageDir = $(shell pwd)/../packages/${package}
-hostCacheDir = $(shell pwd)/../docker/.cache
+hostCacheDir = $(shell pwd)/.cache
 hostReportsDir = $(shell pwd)/../reports/${package}
 
 workDir = /usr/local/bauhaus
@@ -20,7 +20,7 @@ push:
 	@docker push ${image}:${tag}
 
 run: tty = $(if ${CI},,-it)
-run: handledCmd = $(subst reports/,${hostReportsDir}/,${cmd})
+run: handledCmd = $(subst reports/,${reportsDir}/,${cmd})
 run:
 	@docker run --rm ${tty} \
 	    --name bauhausphp-dev-${package} \
