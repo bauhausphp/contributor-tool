@@ -30,7 +30,7 @@ replacePlaceholder() {
 
   r="find ./$folder -type f -exec sed -i 's/<PACKAGE>/$package/g' {} + "
 
-  make docker-run package=$package run="$r"
+  make -C docker run package=$package cmd="$r"
 }
 
 packages=$(cat ./published-packages.txt)
