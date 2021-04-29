@@ -1,5 +1,4 @@
 name: CI
-
 on: push
 
 jobs:
@@ -20,9 +19,9 @@ jobs:
       run: make tests package=<PACKAGE>
 
     - name: Coverage
+      run: |
+        printenv | grep COVERALLS_REPO_TOKEN > docker/run.env
+        make coverage package=<PACKAGE>
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      run: |
-        printenv | grep COVERALLS_REPO_TOKEN >> .docker-run.env
-        make coverage package=<PACKAGE>
 
