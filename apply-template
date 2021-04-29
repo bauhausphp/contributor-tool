@@ -33,7 +33,7 @@ replacePlaceholder() {
   make docker-run package=$package run="$r"
 }
 
-packages=$(ls ./packages)
+packages=$(cat ./published-packages.txt)
 
 for p in $packages;
 do
