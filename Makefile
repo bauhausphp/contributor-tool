@@ -45,8 +45,7 @@ test-unit: coverageArg = --coverage-clover reports/clover.xml --coverage-html re
 test-unit: cmd = phpunit ${filterArg} ${coverageArg}
 test-unit: run-docker
 
-test-infection: githubArgs = $(if ${CI},--logger-github --git-diff-filter=A --git-diff-base=origin/${defaultBranch})
-test-infection: cmd = infection -j2 -s --min-msi=100 --min-covered-msi=100 ${githubArgs}
+test-infection: cmd = infection -j2 -s
 test-infection: run-docker
 
 coverage: options  = -vvv -x reports/clover.xml -o reports/coveralls.json $(if ${dryrun},--dry-run)
