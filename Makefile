@@ -37,6 +37,9 @@ tests:
 test-cs: cmd = phpcs -ps
 test-cs: run-docker
 
+test-stan: cmd = phpstan analyze -c phpstan.neon
+test-stan: run-docker
+
 test-unit: filterArg = $(if ${filter}, --filter=${filter})
 test-unit: coverageArg = --coverage-clover reports/clover.xml --coverage-html reports/html
 test-unit: cmd = phpunit ${filterArg} ${coverageArg}
