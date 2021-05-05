@@ -40,16 +40,13 @@ test-cs: run-docker
 test-stan: cmd = phpstan analyze -c phpstan.neon
 test-stan: run-docker
 
-test-unit: filterArg = $(if ${filter}, --filter=${filter})
-test-unit: coverageArg = --coverage-clover reports/clover.xml --coverage-html reports/html
-test-unit: cmd = phpunit ${filterArg} ${coverageArg}
+test-unit: cmd = phpunit $(if ${filter}, --filter=${filter}) --coverage-clover reports/clover.xml --coverage-html reports/html
 test-unit: run-docker
 
 test-infection: cmd = infection -j2 -s
 test-infection: run-docker
 
-coverage: options  = -vvv -x reports/clover.xml -o reports/coveralls.json $(if ${dryrun},--dry-run)
-coverage: cmd = php-coveralls ${options}
+coverage: cmd = php-coveralls -vvv $(if ${dryrun},--dry-run) -x reports/clover.xml -o reports/coveralls.json
 coverage: run-docker
 
 #
