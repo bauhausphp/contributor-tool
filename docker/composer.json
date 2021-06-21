@@ -2,7 +2,7 @@
   "require": {
     "infection/infection": "^0.23.0",
     "php-coveralls/php-coveralls": "^2.4",
-    "phpstan/phpstan": "^0.12.89",
+    "phpstan/phpstan": "^0.12.90",
     "squizlabs/php_codesniffer": "^3.6"
   }
 }
