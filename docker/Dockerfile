@@ -1,4 +1,4 @@
-FROM php:8.0.7-cli-alpine
+FROM php:8.1.0alpha2-cli-alpine
 
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
